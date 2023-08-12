@@ -1,12 +1,15 @@
 [versions]
 latest = "+"
-gradle = "8.2"
+gradle = "8.3-rc-3"
 kotlin = "1.9.0"
 ktlint = "11.5.0"
+native = "0.9.24"
 
 [libraries]
+clikt = { module = "com.github.ajalt.clikt:clikt", version.ref = "latest" }
 
 [bundles]
 
 [plugins]
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
+native = { id = "org.graalvm.buildtools.native", version.ref = "native" }

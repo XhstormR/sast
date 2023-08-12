@@ -1,4 +1,4 @@
-package com.example
+package io.github.xhstormr.gradle.task
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Property

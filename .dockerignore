@@ -1,6 +1,7 @@
 **/.*
 **/*.md
 Dockerfile
+compose.yaml
 docker-compose.yml
 
 # Created by https://www.toptal.com/developers/gitignore/api/gradle,windows,macos,java,jetbrains+all

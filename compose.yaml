@@ -1,0 +1,20 @@
+services:
+    sast:
+        image: sast:latest
+        build: .
+        volumes:
+            - .:/source/:ro
+            - .:/output/:rw
+        command: --scan-tool=kics,gosec,gitleaks
+
+# docker compose build
+# docker compose up -d
+# docker compose logs -f
+# docker compose down -v
+
+
+
+#FROM gradle:jdk20-graal as gradle
+#FROM ubuntu:latest
+#COPY --from=gradle /app/build/native/nativeCompile/sast /app/
+#ENTRYPOINT ["/app/sast"]

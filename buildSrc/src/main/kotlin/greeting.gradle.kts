@@ -1,8 +1,10 @@
-import com.example.GreetingTask
+import io.github.xhstormr.gradle.task.GreetingTask
+import io.github.xhstormr.gradle.task.ShellTask
 
 tasks {
     register<GreetingTask>("greet") {
         logger.lifecycle("hello, I'm in the configuration phase")
+        group = "test"
         greeting = "hello world! I'm in the execution phase"
 
         doFirst {
@@ -15,15 +17,12 @@ tasks {
         }
     }
 
-    register<Exec>("testExec") {
-        commandLine("git", "--version")
+    register<ShellTask>("shell") {
+        group = "test"
     }
 
-    register<Exec>("testExec2") {
-        commandLine("sh", "-")
-
-        doFirst {
-            standardInput = loadResource("testExec2.sh")
-        }
+    register<Exec>("testExec") {
+        group = "test"
+        commandLine("git", "--version")
     }
 }

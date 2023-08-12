@@ -1,16 +1,42 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    idea
     greeting
+    application
     val kotlinVersion = libs.versions.kotlin
-    kotlin("jvm") version kotlinVersion apply true
+    kotlin("jvm") version kotlinVersion
     alias(libs.plugins.ktlint)
+}
+
+application {
+    applicationName = project.name
+    mainClass = "io.github.xhstormr.sast.cli.MainKt"
+}
+
+dependencies {
+    implementation(libs.clikt)
+}
+
+tasks {
+    register<Jar>("fatJar") {
+        archiveFileName = providers.gradleProperty("out").orNull
+        manifest.attributes["Main-Class"] = application.mainClass
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        from(sourceSets["main"].output)
+        from(configurations.runtimeClasspath.get().map { zipTree(it) })
+        exclude("**/*.kotlin_module")
+        exclude("**/*.kotlin_metadata")
+        exclude("**/*.kotlin_builtins")
+
+        doLast {
+            println(outputs.files.singleFile)
+        }
+    }
 }
 
 allprojects {
 
-    group = "com.example.plugin"
+    group = "io.github.xhstormr.sast"
     version = "1.0.0-SNAPSHOT"
 
     apply {
