@@ -6,11 +6,23 @@ plugins {
     val kotlinVersion = libs.versions.kotlin
     kotlin("jvm") version kotlinVersion
     alias(libs.plugins.ktlint)
+    alias(libs.plugins.native)
 }
 
 application {
     applicationName = project.name
     mainClass = "io.github.xhstormr.sast.cli.MainKt"
+}
+
+graalvmNative {
+    metadataRepository {
+        enabled = true
+    }
+
+    binaries.all {
+        resources.autodetect()
+        // buildArgs("--static")
+    }
 }
 
 dependencies {

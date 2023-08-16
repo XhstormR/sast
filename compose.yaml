@@ -11,10 +11,3 @@ services:
 # docker compose up -d
 # docker compose logs -f
 # docker compose down -v
-
-
-
-#FROM gradle:jdk20-graal as gradle
-#FROM ubuntu:latest
-#COPY --from=gradle /app/build/native/nativeCompile/sast /app/
-#ENTRYPOINT ["/app/sast"]

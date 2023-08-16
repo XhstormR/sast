@@ -1,6 +1,6 @@
 FROM checkmarx/kics:latest as kics
 
-FROM gradle:latest as gradle
+FROM gradle:graal as gradle
 
 USER gradle
 
@@ -14,9 +14,9 @@ RUN echo "Cache Dependencies" \
 
 COPY --chown=gradle:gradle ./ ./
 RUN echo "Actual Build" \
-    && gradle --no-daemon fatJar -Pout=sast.jar
+    && gradle --no-daemon nativeCompile
 
-FROM eclipse-temurin:latest
+FROM ubuntu:latest
 
 ENV CODEQL_VERSION=2.14.2
 ENV CODEQL_HOME=/opt/codeql/
@@ -38,7 +38,7 @@ ENV KICS_HOME=/opt/kics/
 # install semgrep
 RUN echo "Installing Semgrep" \
     && apt-get update \
-    && apt-get install --yes --no-install-recommends python3-pip \
+    && apt-get install --yes --no-install-recommends wget python3-pip \
     && echo "Downloading Semgrep Rules" \
     && wget -O /tmp/semgrep-rules.tar.gz ${SEMGREP_RULES_URL} \
     && mkdir -p "${SEMGREP_HOME}/rules" \
@@ -118,9 +118,9 @@ USER app
 
 WORKDIR /app
 
-COPY --from=gradle /app/build/libs/sast.jar /app/
+COPY --from=gradle /app/build/native/nativeCompile/sast /app/
 
-ENTRYPOINT ["java", "-jar", "sast.jar"]
+ENTRYPOINT ["/app/sast"]
 CMD ["--help"]
 
 # docker build -t sast .
