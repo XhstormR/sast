@@ -9,9 +9,12 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.options.split
 import com.github.ajalt.clikt.parameters.options.unique
+import com.github.ajalt.clikt.parameters.options.validate
 import com.github.ajalt.clikt.parameters.types.enum
 import com.github.ajalt.clikt.parameters.types.path
 import kotlin.io.path.Path
+import kotlin.io.path.isReadable
+import kotlin.io.path.isWritable
 
 object App : CliktCommand(printHelpOnEmptyArgs = true) {
 
@@ -21,13 +24,21 @@ object App : CliktCommand(printHelpOnEmptyArgs = true) {
         }
     }
 
-    private val sourceDir by option().path(mustBeReadable = true).default(Path("/source"))
+    private val sourceDir by option().path().default(Path("/source")).validate {
+        require(it.isReadable()) {
+            with(context.localization) { pathIsNotReadable(pathTypeDirectory(), it.toString()) }
+        }
+    }
 
-    private val outputDir by option().path(mustBeWritable = true).default(Path("/output"))
-
-    private val upload by option().flag()
+    private val outputDir by option().path().default(Path("/output")).validate {
+        require(it.isWritable()) {
+            with(context.localization) { pathIsNotWritable(pathTypeDirectory(), it.toString()) }
+        }
+    }
 
     private val scanTool by option().enum<ScanTool>().split(",").required().unique()
+
+    private val upload by option().flag()
 
     override fun run() {
         echo(sourceDir)

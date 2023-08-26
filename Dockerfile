@@ -39,6 +39,7 @@ ENV KICS_HOME=/opt/kics/
 RUN echo "Installing Semgrep" \
     && apt-get update \
     && apt-get install --yes --no-install-recommends wget python3-pip \
+    && python3 -m pip install --upgrade --no-cache-dir semgrep \
     && echo "Downloading Semgrep Rules" \
     && wget -O /tmp/semgrep-rules.tar.gz ${SEMGREP_RULES_URL} \
     && mkdir -p "${SEMGREP_HOME}/rules" \
@@ -48,7 +49,6 @@ RUN echo "Installing Semgrep" \
         --strip-components 1 \
         --no-same-owner \
     && rm -rf "${SEMGREP_HOME}/rules/stats/" /tmp/semgrep-rules.tar.gz /var/lib/apt/lists/* \
-    && python3 -m pip install --upgrade --no-cache-dir semgrep \
     \
     && echo "Testing Semgrep" \
     && echo semgrep --version && semgrep --version

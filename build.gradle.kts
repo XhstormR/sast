@@ -21,7 +21,7 @@ graalvmNative {
 
     binaries.all {
         resources.autodetect()
-        // buildArgs("--static")
+        // buildArgs("--static", "--libc=musl")
     }
 }
 
@@ -31,7 +31,9 @@ dependencies {
 
 tasks {
     register<Jar>("fatJar") {
-        archiveFileName = providers.gradleProperty("out").orNull
+        val out = providers.gradleProperty("out")
+        if (out.isPresent) archiveFileName = out else archiveAppendix = "all"
+
         manifest.attributes["Main-Class"] = application.mainClass
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         from(sourceSets["main"].output)
