@@ -1,9 +1,9 @@
 [versions]
 latest = "+"
-gradle = "8.3"
+gradle = "8.4"
 kotlin = "1.9.10"
-ktlint = "11.5.1"
-native = "0.9.24"
+ktlint = "11.6.0"
+native = "0.9.27"
 
 [libraries]
 clikt = { module = "com.github.ajalt.clikt:clikt", version.ref = "latest" }

@@ -2,11 +2,6 @@ plugins {
     `kotlin-dsl`
 }
 
-repositories {
-    maven("https://repo.huaweicloud.com/repository/maven/")
-    gradlePluginPortal()
-}
-
 dependencies {
 }
 

@@ -18,15 +18,15 @@ RUN echo "Actual Build" \
 
 FROM ubuntu:latest
 
-ENV CODEQL_VERSION=2.14.2
+ENV CODEQL_VERSION=2.15.0
 ENV CODEQL_HOME=/opt/codeql/
 ARG CODEQL_BINARY_URL=https://github.com/github/codeql-action/releases/download/codeql-bundle-v${CODEQL_VERSION}/codeql-bundle-linux64.tar.gz
 
-ENV GITLEAKS_VERSION=8.17.0
+ENV GITLEAKS_VERSION=8.18.0
 ENV GITLEAKS_HOME=/opt/gitleaks/
 ARG GITLEAKS_BINARY_URL=https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz
 
-ENV GOSEC_VERSION=2.16.0
+ENV GOSEC_VERSION=2.18.1
 ENV GOSEC_HOME=/opt/gosec/
 ARG GOSEC_BINARY_URL=https://github.com/securego/gosec/releases/download/v${GOSEC_VERSION}/gosec_${GOSEC_VERSION}_linux_amd64.tar.gz
 
@@ -36,10 +36,10 @@ ARG SEMGREP_RULES_URL=https://github.com/returntocorp/semgrep-rules/archive/refs
 ENV KICS_HOME=/opt/kics/
 
 # install semgrep
-RUN echo "Installing Semgrep" \
+RUN echo "Installing Python PIP and Semgrep" \
     && apt-get update \
     && apt-get install --yes --no-install-recommends wget python3-pip \
-    && python3 -m pip install --upgrade --no-cache-dir semgrep \
+    && python3 -m pip install --upgrade --no-cache-dir semgrep sarif-tools \
     && echo "Downloading Semgrep Rules" \
     && wget -O /tmp/semgrep-rules.tar.gz ${SEMGREP_RULES_URL} \
     && mkdir -p "${SEMGREP_HOME}/rules" \
@@ -51,7 +51,9 @@ RUN echo "Installing Semgrep" \
     && rm -rf "${SEMGREP_HOME}/rules/stats/" /tmp/semgrep-rules.tar.gz /var/lib/apt/lists/* \
     \
     && echo "Testing Semgrep" \
-    && echo semgrep --version && semgrep --version
+    && echo semgrep --version && semgrep --version \
+    && echo "Testing sarif-tools" \
+    && echo sarif --version && sarif --version
 
 # install codeql
 RUN echo "Downloading CodeQL" \
@@ -116,11 +118,13 @@ RUN echo "Adding app user and group" \
 
 USER app
 
-WORKDIR /app
+WORKDIR /app/bin
 
-COPY --from=gradle /app/build/native/nativeCompile/sast /app/
+ENV PATH=$PATH:/app/bin
 
-ENTRYPOINT ["/app/sast"]
+COPY --from=gradle /app/build/native/nativeCompile/sast /app/bin/
+
+ENTRYPOINT ["/app/bin/sast"]
 CMD ["--help"]
 
 # docker build -t sast .

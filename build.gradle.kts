@@ -21,7 +21,7 @@ graalvmNative {
 
     binaries.all {
         resources.autodetect()
-        // buildArgs("--static", "--libc=musl")
+        buildArgs("--static")
     }
 }
 
