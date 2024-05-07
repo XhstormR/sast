@@ -1,6 +1,7 @@
 services:
     sast:
         image: sast:latest
+        init: true
         build: .
         volumes:
             - .:/source/:ro
