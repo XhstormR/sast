@@ -16,7 +16,7 @@ COPY --chown=gradle:gradle ./ ./
 RUN echo "Actual Build" \
     && gradle --no-daemon nativeCompile
 
-FROM ubuntu:latest
+FROM gcr.io/distroless/static-debian12:nonroot
 
 ENV CODEQL_VERSION=2.15.0
 ENV CODEQL_HOME=/opt/codeql/
